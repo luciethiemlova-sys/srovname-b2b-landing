@@ -279,6 +279,51 @@ nav.scrolled {
     filter: grayscale(1);
 }
 
+/* Case Studies Section */
+.case-studies-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.case-study-card {
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 250px;
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+}
+
+.case-study-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--primary);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.case-study-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    line-height: 1.4;
+    color: var(--text-main);
+    transition: var(--transition);
+}
+
+.case-study-card:hover h3 {
+    color: var(--primary);
+}
+
+.read-more {
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
 /* Testimonials */
 .testimonials-grid {
     display: grid;

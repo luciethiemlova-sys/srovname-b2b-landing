@@ -105,3 +105,27 @@ if (registrationForm) {
         }
     });
 }
+// Partner Slider Controls
+document.addEventListener('DOMContentLoaded', () => {
+    const slider = document.getElementById('partnerSlider');
+    const prevBtn = document.querySelector('.slider-arrow.prev');
+    const nextBtn = document.querySelector('.slider-arrow.next');
+
+    if (slider && prevBtn && nextBtn) {
+        const scrollAmount = 340; // Width of slide + gap
+
+        nextBtn.addEventListener('click', () => {
+            slider.scrollBy({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
+        });
+
+        prevBtn.addEventListener('click', () => {
+            slider.scrollBy({
+                left: -scrollAmount,
+                behavior: 'smooth'
+            });
+        });
+    }
+});

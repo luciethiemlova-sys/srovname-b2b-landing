@@ -320,13 +320,13 @@ nav.scrolled {
 }
 
 .case-study-logo {
-    max-height: 120px;
-    max-width: 160px;
+    max-height: 150px;
+    max-width: 200px;
     width: auto;
     object-fit: contain;
     display: block;
-    margin-top: -1rem;
-    /* Mírné posunutí nahoru pro lepší kompozici */
+    margin-top: -1.5rem;
+    /* Mírné posunutí nahoru pro lepší kompozici při větším logu */
 }
 
 .case-study-card:hover h3 {

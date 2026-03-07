@@ -311,6 +311,15 @@ nav.scrolled {
     transition: var(--transition);
 }
 
+.case-study-logo {
+    max-height: 45px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 1.5rem;
+    display: block;
+    align-self: flex-start;
+}
+
 .case-study-card:hover h3 {
     color: var(--primary);
 }

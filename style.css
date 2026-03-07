@@ -311,13 +311,22 @@ nav.scrolled {
     transition: var(--transition);
 }
 
+.case-study-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: auto;
+    width: 100%;
+}
+
 .case-study-logo {
-    max-height: 45px;
+    max-height: 120px;
+    max-width: 160px;
     width: auto;
     object-fit: contain;
-    margin-bottom: 1.5rem;
     display: block;
-    align-self: flex-start;
+    margin-top: -1rem;
+    /* Mírné posunutí nahoru pro lepší kompozici */
 }
 
 .case-study-card:hover h3 {
@@ -330,7 +339,8 @@ nav.scrolled {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-top: auto;
+    padding-bottom: 0.5rem;
+    /* Zarovnání s logem */
 }
 
 /* Testimonials */

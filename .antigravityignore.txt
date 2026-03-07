@@ -1,0 +1,5 @@
+.antigravityignore
+node_modules/
+.next/
+.git/
+.env

@@ -100,6 +100,20 @@ section {
     font-size: 1.25rem;
 }
 
+.btn-ghost {
+    background-color: transparent;
+    color: var(--text-muted);
+    border: 2px solid #E2E8F0;
+    box-shadow: none;
+}
+
+.btn-ghost:hover {
+    background-color: #F8FAFC;
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateY(-2px);
+}
+
 /* Navbar */
 nav {
     position: fixed;
@@ -141,7 +155,7 @@ nav.scrolled {
 /* Hero Section */
 .hero {
     position: relative;
-    padding: 12rem 0 8rem;
+    padding: 14rem 0 10rem;
     background: radial-gradient(circle at top right, #fff5f5 0%, #ffffff 100%);
     overflow: hidden;
 }
@@ -157,23 +171,70 @@ nav.scrolled {
     z-index: 0;
 }
 
+.hero::after {
+    content: '';
+    position: absolute;
+    bottom: -10%;
+    left: -5%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(227, 6, 19, 0.02) 0%, transparent 70%);
+    z-index: 0;
+}
+
 .hero-content {
-    max-width: 800px;
+    max-width: 900px;
     position: relative;
     z-index: 1;
 }
 
+.hero-badge-container {
+    margin-bottom: 2rem;
+}
+
+.hero-partner-badge {
+    height: 100px;
+    width: auto;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+    transform: rotate(-3deg);
+    transition: var(--transition);
+}
+
+.hero-partner-badge:hover {
+    transform: rotate(0deg) scale(1.05);
+}
+
 .hero h1 {
-    font-size: clamp(2.5rem, 8vw, 4rem);
-    margin-bottom: 1.5rem;
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    margin-bottom: 2rem;
     color: var(--primary);
+    letter-spacing: -0.02em;
 }
 
 .hero p {
-    font-size: 1.25rem;
+    font-size: 1.4rem;
     color: var(--text-muted);
-    margin-bottom: 2.5rem;
-    max-width: 600px;
+    margin-bottom: 3rem;
+    max-width: 700px;
+    line-height: 1.5;
+}
+
+@keyframes float {
+    0% {
+        transform: rotate(-3deg) translateY(0px);
+    }
+
+    50% {
+        transform: rotate(-1deg) translateY(-10px);
+    }
+
+    100% {
+        transform: rotate(-3deg) translateY(0px);
+    }
+}
+
+.hero-partner-badge.active {
+    animation: float 6s ease-in-out infinite;
 }
 
 /* Benefits Section */
@@ -285,6 +346,20 @@ nav.scrolled {
     color: #CBD5E1;
     font-size: 1.5rem;
     filter: grayscale(1);
+}
+
+.partner-logo-img {
+    max-height: 40px;
+    width: auto;
+    filter: grayscale(100%);
+    opacity: 0.6;
+    transition: var(--transition);
+}
+
+.partner-logo-img:hover {
+    filter: grayscale(0%);
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 /* Case Studies Section */
@@ -666,17 +741,6 @@ footer {
     height: 220px !important;
     object-fit: cover;
     border-radius: 12px;
-    filter: grayscale(100%);
-    opacity: 0.7;
-    transition: var(--transition);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.partner-slide:hover img {
-    filter: grayscale(0%);
-    opacity: 1;
-    transform: scale(1.02);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 .slider-arrow {

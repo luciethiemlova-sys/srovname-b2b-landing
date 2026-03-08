@@ -770,8 +770,8 @@ footer {
 .partner-slide img {
     width: 100% !important;
     height: 220px !important;
-    object-fit: cover;
-    object-position: top center;
+    object-fit: contain;
+    object-position: center;
     border-radius: 12px;
 }
 

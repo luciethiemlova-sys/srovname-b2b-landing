@@ -107,25 +107,45 @@ if (registrationForm) {
 }
 // Partner Slider Controls
 document.addEventListener('DOMContentLoaded', () => {
-    const slider = document.getElementById('partnerSlider');
-    const prevBtn = document.querySelector('.slider-arrow.prev');
-    const nextBtn = document.querySelector('.slider-arrow.next');
+    // Shared slider scroll function
+    const setupSlider = (sliderId, prevBtnId, nextBtnId, scrollAmount) => {
+        const slider = document.getElementById(sliderId);
+        const prevBtn = document.getElementById(prevBtnId) || document.querySelector(`.slider-arrow.prev`);
+        const nextBtn = document.getElementById(nextBtnId) || document.querySelector(`.slider-arrow.next`);
 
-    if (slider && prevBtn && nextBtn) {
-        const scrollAmount = 340; // Width of slide + gap
-
-        nextBtn.addEventListener('click', () => {
-            slider.scrollBy({
-                left: scrollAmount,
-                behavior: 'smooth'
+        if (slider && prevBtn && nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                slider.scrollBy({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
             });
-        });
 
-        prevBtn.addEventListener('click', () => {
-            slider.scrollBy({
-                left: -scrollAmount,
-                behavior: 'smooth'
+            prevBtn.addEventListener('click', () => {
+                slider.scrollBy({
+                    left: -scrollAmount,
+                    behavior: 'smooth'
+                });
             });
+        }
+    };
+
+    // Setup Photo Slider
+    setupSlider('partnerSlider', null, null, 340);
+
+    // Setup Testimonial Slider
+    const testimonialSlider = document.getElementById('testimonialSlider');
+    if (testimonialSlider) {
+        const getScrollAmount = () => {
+            const card = testimonialSlider.querySelector('.testimonial-card');
+            return card ? card.offsetWidth + 32 : 400; // 32 is gap (2rem)
+        };
+
+        setupSlider('testimonialSlider', 'testimonialPrev', 'testimonialNext', getScrollAmount());
+
+        // Update scroll amount on resize
+        window.addEventListener('resize', () => {
+            // Re-setup if needed or just use dynamic amount in the listener
         });
     }
 });

@@ -345,6 +345,13 @@ nav.scrolled {
     line-height: 1.5;
 }
 
+.hero-subtitle {
+    color: #000000;
+    font-size: 0.85em;
+    display: block;
+    margin-top: 0.5rem;
+}
+
 @keyframes float {
     0% {
         transform: rotate(-3deg) translateY(0px);

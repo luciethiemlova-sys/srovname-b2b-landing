@@ -102,16 +102,16 @@ section {
 
 .btn-ghost {
     background-color: transparent;
-    color: var(--text-muted);
-    border: 2px solid #E2E8F0;
+    color: var(--primary);
+    border: 2px solid var(--primary);
     box-shadow: none;
 }
 
 .btn-ghost:hover {
-    background-color: #F8FAFC;
-    border-color: var(--primary);
-    color: var(--primary);
+    background-color: var(--primary);
+    color: white;
     transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(227, 6, 19, 0.2);
 }
 
 /* Navbar */
@@ -501,6 +501,14 @@ nav.scrolled {
     filter: grayscale(0%);
     opacity: 1;
     transform: scale(1.1);
+}
+
+/* Specifické úpravy pro menší/tenčí loga */
+.partner-logo-img[alt="Shoptet"],
+.partner-logo-img[alt="Upgates"],
+.partner-logo-img[alt="MM Marketing"] {
+    max-height: 55px;
+    opacity: 0.8;
 }
 
 /* Case Studies Section */

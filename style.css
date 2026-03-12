@@ -468,17 +468,33 @@ nav.scrolled {
 .partners-logos {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 3rem;
+    gap: 2rem;
     align-items: center;
-    justify-items: center;
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
+}
+
+.logo-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+    opacity: 0.6;
+    transition: var(--transition);
+}
+
+.logo-item:hover {
+    opacity: 1;
 }
 
 @media (max-width: 768px) {
     .partners-logos {
         grid-template-columns: repeat(2, 1fr);
-        gap: 2rem;
+        gap: 1.5rem;
+    }
+    
+    .logo-item {
+        height: 60px;
     }
 }
 
@@ -491,24 +507,16 @@ nav.scrolled {
 
 .partner-logo-img {
     max-height: 40px;
+    max-width: 100%;
     width: auto;
     filter: grayscale(100%);
-    opacity: 0.6;
     transition: var(--transition);
+    object-fit: contain;
 }
 
-.partner-logo-img:hover {
+.logo-item:hover .partner-logo-img {
     filter: grayscale(0%);
-    opacity: 1;
-    transform: scale(1.1);
-}
-
-/* Specifické úpravy pro menší/tenčí loga */
-.partner-logo-img[alt="Shoptet"],
-.partner-logo-img[alt="Upgates"],
-.partner-logo-img[alt="MM Marketing"] {
-    max-height: 55px;
-    opacity: 0.8;
+    transform: scale(1.05);
 }
 
 /* Case Studies Section */

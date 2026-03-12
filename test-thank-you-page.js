@@ -16,7 +16,7 @@ const checks = [
     'https://admin.srovname.cz/',
     'Jaké jsou další kroky?',
     'Ozve se vám náš obchodník',
-    'Vlastní registrační odkaz s bonusem',
+    'Vlastní registrační odkaz',
     'Začnete registrovat e-shopy',
     'Spustíme první kampaně',
     'podpora@srovname.cz'

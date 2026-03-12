@@ -114,8 +114,9 @@ if (registrationForm) {
             });
 
             if (response.ok) {
-                // Success! Redirect to thank you page
-                window.location.href = '/dekujeme.html';
+                // Success! Redirect to thank you page with email param
+                const email = formData.get('email');
+                window.location.href = `/dekujeme.html?email=${encodeURIComponent(email)}`;
             } else {
                 const data = await response.json();
                 if (Object.hasOwn(data, 'errors')) {

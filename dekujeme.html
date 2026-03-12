@@ -27,49 +27,57 @@
                     <i class="fa-solid fa-circle-check" style="font-size: 4rem; color: var(--primary);"></i>
                 </div>
                 <h1 class="reveal active">Děkujeme. Vaše registrace byla právě dokončena.</h1>
-                <p class="reveal active" style="margin: 0 auto 1.5rem; font-size: 1.2rem; max-width: 600px;">
-                    Na váš e-mail <strong>mail@priklad.cz</strong> zašleme do 24 hodin přihlašovací údaje do Vašeho účtu.
+                <p class="reveal active" style="margin: 1.5rem auto; font-size: 1.5rem; max-width: 800px; color: var(--text-main); font-weight: 500;">
+                    Na váš e-mail <strong id="user-email" style="color: var(--primary);">mail@priklad.cz</strong> zašleme do 24 hodin přihlašovací údaje do Vašeho účtu.
                 </p>
-                <div class="reveal active" style="margin-bottom: 3rem;">
+                <div class="reveal active" style="margin-top: 2.5rem; margin-bottom: 3rem;">
                     <a href="https://admin.srovname.cz/" class="btn btn-primary btn-large">Přejít na přihlašovací stránku</a>
                 </div>
             </div>
         </div>
     </header>
 
-    <section id="next-steps" style="padding-top: 2rem;">
+    <section id="next-steps" style="padding-top: 2rem; background-color: var(--bg-alternate);">
         <div class="container">
             <div class="section-title reveal active">
                 <h2>Jaké jsou další kroky?</h2>
             </div>
 
-            <div class="benefit-list">
-                <div class="benefit-item glass reveal active">
-                    <div class="icon">1️⃣</div>
+            <style>
+                @media (min-width: 992px) {
+                    .benefit-list-horizontal {
+                        grid-template-columns: repeat(4, 1fr) !important;
+                    }
+                }
+            </style>
+
+            <div class="benefit-list benefit-list-horizontal">
+                <div class="benefit-item glass reveal active" style="flex-direction: column; text-align: center;">
+                    <div class="icon" style="margin: 0 auto 1rem;">1️⃣</div>
                     <div>
-                        <strong>Ozve se vám náš obchodník</strong>
-                        <p>Domluví si s vámi krátkou online schůzku, kde vám vše vysvětlí – od spuštění inzerce až po správu klientských účtů. Získáte prostor zeptat se na cokoliv.</p>
+                        <strong style="display: block; margin-bottom: 0.5rem;">Ozve se vám náš obchodník</strong>
+                        <p style="font-size: 0.95rem;">Domluví si s vámi krátkou online schůzku, kde vám vše vysvětlí – od spuštění inzerce až po správu klientských účtů.</p>
                     </div>
                 </div>
-                <div class="benefit-item glass reveal active">
-                    <div class="icon">2️⃣</div>
+                <div class="benefit-item glass reveal active" style="flex-direction: column; text-align: center;">
+                    <div class="icon" style="margin: 0 auto 1rem;">2️⃣</div>
                     <div>
-                        <strong>Vlastní registrační odkaz s bonusem</strong>
-                        <p>Každý e-shop, který se přes váš unikátní odkaz zaregistruje, získá +15 % kreditu zdarma k prvnímu dobití.</p>
+                        <strong style="display: block; margin-bottom: 0.5rem;">Vlastní registrační odkaz</strong>
+                        <p style="font-size: 0.95rem;">Každý e-shop, který se přes váš unikátní odkaz zaregistruje, získá +15 % kreditu zdarma k prvnímu dobití.</p>
                     </div>
                 </div>
-                <div class="benefit-item glass reveal active">
-                    <div class="icon">3️⃣</div>
+                <div class="benefit-item glass reveal active" style="flex-direction: column; text-align: center;">
+                    <div class="icon" style="margin: 0 auto 1rem;">3️⃣</div>
                     <div>
-                        <strong>Začnete registrovat e-shopy</strong>
-                        <p>E-shopy můžete registrovat sami přes váš registrační odkaz, nebo nám poslat potřebné údaje a registraci zařídíme my. Všechny e-shopy vám následně připojíme k agenturnímu účtu.</p>
+                        <strong style="display: block; margin-bottom: 0.5rem;">Začnete registrovat e-shopy</strong>
+                        <p style="font-size: 0.95rem;">E-shopy můžete registrovat sami, nebo nám poslat údaje a registraci zařídíme my. Všechny vám pak připojíme k účtu.</p>
                     </div>
                 </div>
-                <div class="benefit-item glass reveal active">
-                    <div class="icon">4️⃣</div>
+                <div class="benefit-item glass reveal active" style="flex-direction: column; text-align: center;">
+                    <div class="icon" style="margin: 0 auto 1rem;">4️⃣</div>
                     <div>
-                        <strong>Spustíme první kampaně</strong>
-                        <p>Po nahrání feedu, nasazení konverzního pixelu a dobití kreditu můžeme spustit inzerci e-shopu. Náš tým vám bude po ruce pro nastavení i optimalizaci.</p>
+                        <strong style="display: block; margin-bottom: 0.5rem;">Spustíme první kampaně</strong>
+                        <p style="font-size: 0.95rem;">Po nahrání feedu, nasazení pixelu a dobití kreditu spustíme inzerci. Náš tým vám bude k ruce pro optimalizaci.</p>
                     </div>
                 </div>
             </div>
@@ -89,6 +97,20 @@
             <p>&copy; 2026 Srovname.cz – Všechna práva vyhrazena.</p>
         </div>
     </footer>
+
+    <script>
+        // Extract email from URL parameters
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+            if (email) {
+                const emailDisplay = document.getElementById('user-email');
+                if (emailDisplay) {
+                    emailDisplay.textContent = email;
+                }
+            }
+        });
+    </script>
 
     <script src="script.js" type="module"></script>
 </body>

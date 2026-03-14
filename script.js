@@ -110,27 +110,35 @@ if (registrationForm) {
 
         const formData = new FormData(form);
 
-        // Převod na URLSearchParams – GAS to zpracuje spolehlivěji
-        const params = new URLSearchParams();
-        for (const [key, value] of formData.entries()) {
-            params.append(key, value);
-        }
-
         try {
-            // GAS vyžaduje no-cors kvůli CORS politice Google
-            await fetch(GAS_URL, {
-                method: 'POST',
-                body: params,
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-            });
+            // Skrytý iframe – nejspolehlivější metoda pro GAS bez CORS problémů
+            const iframe = document.createElement('iframe');
+            iframe.name = 'gas-iframe-' + Date.now();
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
 
-            // S no-cors nemůžeme číst odpověď – vždy přesměrujeme
-            // GAS data přijme a zpracuje správně na pozadí
-            const email = formData.get('email');
-            window.location.href = `/dekujeme.html?email=${encodeURIComponent(email)}`;
+            const hiddenForm = document.createElement('form');
+            hiddenForm.method = 'POST';
+            hiddenForm.action = GAS_URL;
+            hiddenForm.target = iframe.name;
+            hiddenForm.style.display = 'none';
+
+            for (const [key, value] of formData.entries()) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = value;
+                hiddenForm.appendChild(input);
+            }
+
+            document.body.appendChild(hiddenForm);
+            hiddenForm.submit();
+
+            // Počkáme chvíli a přesměrujeme
+            setTimeout(() => {
+                const email = formData.get('email');
+                window.location.href = `/dekujeme.html?email=${encodeURIComponent(email)}`;
+            }, 1500);
 
         } catch (error) {
             alert('Chyba při odesílání. Zkontrolujte prosím své připojení k internetu.');

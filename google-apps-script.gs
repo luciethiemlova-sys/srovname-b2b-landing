@@ -7,7 +7,7 @@
 const CONFIG = {
   // ID vaší Google tabulky – najdete ho v URL tabulky:
   // https://docs.google.com/spreadsheets/d/TOTO_JE_ID/edit
-  SHEET_ID: "DOPLNTE_ID_VASI_GOOGLE_TABULKY",
+  SHEET_ID: "150bg9x8msPuQJMCCBCG91FBM6KSUFrniQQP2AF2w_L8",
 
   // Název listu v tabulce (výchozí je "List1", nebo si ho přejmenujte)
   SHEET_NAME: "Registrace",
@@ -19,7 +19,7 @@ const CONFIG = {
   FROM_NAME: "Srovname.cz B2B",
 
   // Interní notifikace – kdo dostane email o každé nové registraci
-  NOTIFY_EMAIL: "vas@email.cz",
+  NOTIFY_EMAIL: "lucie.thiemlova@srovname.cz",
 };
 
 // ============================================================

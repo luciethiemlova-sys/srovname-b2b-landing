@@ -111,21 +111,18 @@ if (registrationForm) {
         const formData = new FormData(form);
 
         try {
-            const response = await fetch(GAS_URL, {
+            // GAS vyžaduje no-cors kvůli CORS politice Google
+            await fetch(GAS_URL, {
                 method: 'POST',
                 body: formData,
+                mode: 'no-cors',
             });
 
-            const data = await response.json();
+            // S no-cors nemůžeme číst odpověď – vždy přesměrujeme
+            // GAS data přijme a zpracuje správně na pozadí
+            const email = formData.get('email');
+            window.location.href = `/dekujeme.html?email=${encodeURIComponent(email)}`;
 
-            if (data.success) {
-                // Úspěch! Přesměruj na stránku "Zkontrolujte e-mail"
-                const email = formData.get('email');
-                window.location.href = `/dekujeme.html?email=${encodeURIComponent(email)}`;
-            } else {
-                alert('Něco se nepovedlo. Zkuste to prosím znovu nebo nás kontaktujte e-mailem.');
-                resetButton();
-            }
         } catch (error) {
             alert('Chyba při odesílání. Zkontrolujte prosím své připojení k internetu.');
             resetButton();

@@ -1,24 +1,12 @@
 // ============================================================
 // GOOGLE APPS SCRIPT – Double Opt-In pro Srovname.cz B2B
 // ============================================================
-// NASTAVENÍ: Vyplňte níže vaše hodnoty
-// ============================================================
 
 const CONFIG = {
-  // ID vaší Google tabulky – najdete ho v URL tabulky:
-  // https://docs.google.com/spreadsheets/d/TOTO_JE_ID/edit
   SHEET_ID: "150bg9x8msPuQJMCCBCG91FBM6KSUFrniQQP2AF2w_L8",
-
-  // Název listu v tabulce (výchozí je "List1", nebo si ho přejmenujte)
   SHEET_NAME: "Registrace",
-
-  // URL vaší live stránky (bez lomítka na konci)
   SITE_URL: "https://srovname-b2b-landing.vercel.app",
-
-  // E-mail, ze kterého se odešle potvrzení (musí být váš Google účet)
   FROM_NAME: "Srovname.cz B2B",
-
-  // Interní notifikace – kdo dostane email o každé nové registraci
   NOTIFY_EMAIL: "lucie.thiemlova@srovname.cz",
 };
 
@@ -37,16 +25,22 @@ function doPost(e) {
     Logger.log("doPost zavolán. Email: " + email + ", Agency: " + agency);
 
     if (!email) {
-      Logger.log("Chybí email – konec");
       return jsonResponse({ success: false, error: "Chybí e-mail" });
     }
 
-    // Vygeneruj unikátní token
     const token = generateToken();
     const timestamp = new Date().toISOString();
 
-    // NEJDŘÍV pošli email – než se pokusíme ukládat do sheetu
-    const confirmUrl = `${CONFIG.SITE_URL}/potvrdit.html?token=${token}&email=${encodeURIComponent(email)}`;
+    // Ulož token do PropertiesService (spolehlivé vestavěné úložiště)
+    const props = PropertiesService.getScriptProperties();
+    props.setProperty('token_' + token, JSON.stringify({
+      email, name, agency, ico, phone, timestamp, confirmed: false
+    }));
+    Logger.log("Token uložen: " + token);
+
+    // Odkaz vede přes GAS doGet, který token ověří
+    const GAS_EXEC_URL = ScriptApp.getService().getUrl();
+    const confirmUrl = `${GAS_EXEC_URL}?token=${token}&email=${encodeURIComponent(email)}`;
 
     const emailHtml = `
       <!DOCTYPE html>
@@ -77,47 +71,35 @@ function doPost(e) {
       </html>
     `;
 
-    Logger.log("Odesílám potvrzovací email na: " + email);
+    Logger.log("Odesílám email na: " + email);
     MailApp.sendEmail({
       to: email,
       subject: "Potvrďte vaši registraci – Srovname.cz B2B",
       htmlBody: emailHtml,
       name: CONFIG.FROM_NAME,
     });
-    Logger.log("Potvrzovací email odeslán ✅");
+    Logger.log("Email odeslán ✅");
 
-    // Interní notifikace
     if (CONFIG.NOTIFY_EMAIL) {
       MailApp.sendEmail({
         to: CONFIG.NOTIFY_EMAIL,
         subject: `Nová B2B registrace (čeká na potvrzení): ${agency}`,
-        body: `Nová registrace:\nJméno: ${name}\nAgency: ${agency}\nIČO: ${ico}\nEmail: ${email}\nTelefon: ${phone}\nStav: ČEKÁ NA POTVRZENÍ`,
+        body: `Nová registrace:\nJméno: ${name}\nAgency: ${agency}\nIČO: ${ico}\nEmail: ${email}\nTelefon: ${phone}`,
       });
-      Logger.log("Interní notifikace odeslána na: " + CONFIG.NOTIFY_EMAIL);
     }
 
-    // Ulož do Google Sheets
+    // Ulož do Google Sheets (reporting)
     try {
       const ss = SpreadsheetApp.openById(CONFIG.SHEET_ID);
       let sheet = ss.getSheetByName(CONFIG.SHEET_NAME);
-      if (!sheet) {
-        Logger.log("List '" + CONFIG.SHEET_NAME + "' nenalezen – používám první list");
-        sheet = ss.getSheets()[0];
-      }
-      Logger.log("Ukládám do listu: " + sheet.getName());
-
+      if (!sheet) sheet = ss.getSheets()[0];
       if (sheet.getLastRow() === 0) {
-        sheet.appendRow([
-          "Datum odeslání", "Stav", "Jméno", "Agency", "IČO", "E-mail", "Telefon", "Token", "Datum potvrzení"
-        ]);
+        sheet.appendRow(["Datum odeslání", "Stav", "Jméno", "Agency", "IČO", "E-mail", "Telefon", "Token", "Datum potvrzení"]);
       }
-      sheet.appendRow([
-        timestamp, "ČEKÁ NA POTVRZENÍ", name, agency, ico, email, phone, token, ""
-      ]);
+      sheet.appendRow([timestamp, "ČEKÁ NA POTVRZENÍ", name, agency, ico, email, phone, token, ""]);
       Logger.log("Uloženo do sheetu ✅");
     } catch (sheetErr) {
-      Logger.log("Chyba při ukládání do sheetu: " + sheetErr.toString());
-      // Email byl odeslán – pokračujeme i přes chybu sheetu
+      Logger.log("Sheet chyba (token je bezpečně v PropertiesService): " + sheetErr.toString());
     }
 
     return jsonResponse({ success: true });
@@ -129,63 +111,72 @@ function doPost(e) {
 }
 
 // ============================================================
-// doGet – potvrdí registraci ze token odkazu
+// doGet – ověří token a potvrdí registraci
 // ============================================================
 function doGet(e) {
   const token = e.parameter.token;
-  const email = e.parameter.email || "";
+  const SITE = CONFIG.SITE_URL;
 
   if (!token) {
-    return HtmlService.createHtmlOutput(redirect(`${CONFIG.SITE_URL}/potvrdit.html?status=error`));
+    return HtmlService.createHtmlOutput(redirect(`${SITE}/potvrdit.html?status=error`));
   }
 
   try {
-    const sheet = SpreadsheetApp.openById(CONFIG.SHEET_ID).getSheetByName(CONFIG.SHEET_NAME);
-    const data = sheet.getDataRange().getValues();
+    const props = PropertiesService.getScriptProperties();
+    const tokenKey = 'token_' + token;
+    const stored = props.getProperty(tokenKey);
 
-    // Sloupce: [0]Datum, [1]Stav, [2]Jméno, [3]Agency, [4]IČO, [5]Email, [6]Telefon, [7]Token, [8]Datum potvrzení
-    const TOKEN_COL = 7;
-    const STATUS_COL = 1;
-    const CONFIRMED_COL = 8;
-    const EMAIL_COL = 5;
+    Logger.log("doGet token: " + token + ", nalezen: " + (stored ? "ANO" : "NE"));
 
-    let found = false;
-    for (let i = 1; i < data.length; i++) {
-      if (data[i][TOKEN_COL] === token) {
-        if (data[i][STATUS_COL] === "POTVRZENO") {
-          // Už potvrzeno – jen přesměruj
-          const confirmedEmail = data[i][EMAIL_COL];
-          return HtmlService.createHtmlOutput(
-            redirect(`${CONFIG.SITE_URL}/potvrdit.html?status=ok&email=${encodeURIComponent(confirmedEmail)}`)
-          );
+    if (!stored) {
+      return HtmlService.createHtmlOutput(redirect(`${SITE}/potvrdit.html?status=error`));
+    }
+
+    const data = JSON.parse(stored);
+
+    if (data.confirmed) {
+      return HtmlService.createHtmlOutput(
+        redirect(`${SITE}/potvrdit.html?status=ok&email=${encodeURIComponent(data.email)}`)
+      );
+    }
+
+    // Označ jako potvrzeno
+    data.confirmed = true;
+    data.confirmedAt = new Date().toISOString();
+    props.setProperty(tokenKey, JSON.stringify(data));
+    Logger.log("Potvrzeno ✅ pro: " + data.email);
+
+    if (CONFIG.NOTIFY_EMAIL) {
+      MailApp.sendEmail({
+        to: CONFIG.NOTIFY_EMAIL,
+        subject: `✅ Registrace POTVRZENA: ${data.agency}`,
+        body: `Registrace potvrzena:\nJméno: ${data.name}\nAgency: ${data.agency}\nIČO: ${data.ico}\nEmail: ${data.email}`,
+      });
+    }
+
+    // Aktualizuj Sheet
+    try {
+      const ss = SpreadsheetApp.openById(CONFIG.SHEET_ID);
+      const sheet = ss.getSheetByName(CONFIG.SHEET_NAME) || ss.getSheets()[0];
+      const sheetData = sheet.getDataRange().getValues();
+      for (let i = 1; i < sheetData.length; i++) {
+        if (sheetData[i][7] === token) {
+          sheet.getRange(i + 1, 2).setValue("POTVRZENO");
+          sheet.getRange(i + 1, 9).setValue(data.confirmedAt);
+          break;
         }
-        // Aktualizuj stav na POTVRZENO
-        sheet.getRange(i + 1, STATUS_COL + 1).setValue("POTVRZENO");
-        sheet.getRange(i + 1, CONFIRMED_COL + 1).setValue(new Date().toISOString());
-        const confirmedEmail = data[i][EMAIL_COL];
-
-        // Interní notifikace o potvrzení
-        if (CONFIG.NOTIFY_EMAIL) {
-          MailApp.sendEmail({
-            to: CONFIG.NOTIFY_EMAIL,
-            subject: `✅ Registrace POTVRZENA: ${data[i][3]}`,
-            body: `Registrace byla potvrzena:\nJméno: ${data[i][2]}\nAgency: ${data[i][3]}\nIČO: ${data[i][4]}\nEmail: ${confirmedEmail}`,
-          });
-        }
-
-        found = true;
-        return HtmlService.createHtmlOutput(
-          redirect(`${CONFIG.SITE_URL}/potvrdit.html?status=ok&email=${encodeURIComponent(confirmedEmail)}`)
-        );
       }
+    } catch (sheetErr) {
+      Logger.log("Sheet update chyba (nevadí): " + sheetErr.toString());
     }
 
-    if (!found) {
-      return HtmlService.createHtmlOutput(redirect(`${CONFIG.SITE_URL}/potvrdit.html?status=error`));
-    }
+    return HtmlService.createHtmlOutput(
+      redirect(`${SITE}/potvrdit.html?status=ok&email=${encodeURIComponent(data.email)}`)
+    );
 
   } catch (err) {
-    return HtmlService.createHtmlOutput(redirect(`${CONFIG.SITE_URL}/potvrdit.html?status=error`));
+    Logger.log("doGet chyba: " + err.toString());
+    return HtmlService.createHtmlOutput(redirect(`${SITE}/potvrdit.html?status=error`));
   }
 }
 
@@ -206,20 +197,12 @@ function redirect(url) {
   return `<meta http-equiv="refresh" content="0;url=${url}"><script>window.location.href="${url}";<\/script>`;
 }
 
-// ============================================================
-// TEST FUNKCE – spusťte ji ručně z Apps Script editoru
-// Ověří, že email odesílání funguje
-// ============================================================
+// TEST – spusťte ručně z editoru
 function testEmail() {
-  try {
-    MailApp.sendEmail({
-      to: CONFIG.NOTIFY_EMAIL,
-      subject: "TEST – Srovname.cz GAS funguje ✅",
-      body: "Pokud vidíte tento email, Google Apps Script funguje správně a může odesílat emaily.",
-    });
-    Logger.log("✅ Testovací email odeslán na: " + CONFIG.NOTIFY_EMAIL);
-  } catch (e) {
-    Logger.log("❌ Chyba: " + e.toString());
-  }
+  MailApp.sendEmail({
+    to: CONFIG.NOTIFY_EMAIL,
+    subject: "TEST – Srovname.cz GAS funguje ✅",
+    body: "Google Apps Script funguje správně.",
+  });
+  Logger.log("✅ Test odeslán na: " + CONFIG.NOTIFY_EMAIL);
 }
-

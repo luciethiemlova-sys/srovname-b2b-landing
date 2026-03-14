@@ -13,7 +13,7 @@ const CONFIG = {
   SHEET_NAME: "Registrace",
 
   // URL vaší live stránky (bez lomítka na konci)
-  SITE_URL: "https://partneri.srovname.cz",
+  SITE_URL: "https://srovname-b2b-landing.vercel.app",
 
   // E-mail, ze kterého se odešle potvrzení (musí být váš Google účet)
   FROM_NAME: "Srovname.cz B2B",
@@ -34,7 +34,10 @@ function doPost(e) {
     const phone = params.phone || "";
     const name = params.name || "";
 
+    Logger.log("doPost zavolán. Email: " + email + ", Agency: " + agency);
+
     if (!email) {
+      Logger.log("Chybí email – konec");
       return jsonResponse({ success: false, error: "Chybí e-mail" });
     }
 
@@ -42,24 +45,7 @@ function doPost(e) {
     const token = generateToken();
     const timestamp = new Date().toISOString();
 
-    // Ulož do Google Sheets
-    const sheet = SpreadsheetApp.openById(CONFIG.SHEET_ID).getSheetByName(CONFIG.SHEET_NAME);
-    if (!sheet) {
-      return jsonResponse({ success: false, error: "List nenalezen" });
-    }
-
-    // Přidej záhlaví, pokud je tabulka prázdná
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow([
-        "Datum odeslání", "Stav", "Jméno", "Agency", "IČO", "E-mail", "Telefon", "Token", "Datum potvrzení"
-      ]);
-    }
-
-    sheet.appendRow([
-      timestamp, "ČEKÁ NA POTVRZENÍ", name, agency, ico, email, phone, token, ""
-    ]);
-
-    // Pošli potvrzovací email
+    // NEJDŘÍV pošli email – než se pokusíme ukládat do sheetu
     const confirmUrl = `${CONFIG.SITE_URL}/potvrdit.html?token=${token}&email=${encodeURIComponent(email)}`;
 
     const emailHtml = `
@@ -68,7 +54,7 @@ function doPost(e) {
       <head><meta charset="UTF-8"></head>
       <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <img src="https://partneri.srovname.cz/images/logo-srovname-new.png" alt="Srovname.cz" style="height: 40px;">
+          <img src="https://srovname-b2b-landing.vercel.app/images/logo-srovname-new.png" alt="Srovname.cz" style="height: 40px;">
         </div>
         <h2 style="color: #FF6723;">Potvrďte vaši registraci</h2>
         <p>Dobrý den, <strong>${name}</strong>,</p>
@@ -91,25 +77,53 @@ function doPost(e) {
       </html>
     `;
 
+    Logger.log("Odesílám potvrzovací email na: " + email);
     MailApp.sendEmail({
       to: email,
       subject: "Potvrďte vaši registraci – Srovname.cz B2B",
       htmlBody: emailHtml,
       name: CONFIG.FROM_NAME,
     });
+    Logger.log("Potvrzovací email odeslán ✅");
 
-    // Interní notifikace (volitelné)
+    // Interní notifikace
     if (CONFIG.NOTIFY_EMAIL) {
       MailApp.sendEmail({
         to: CONFIG.NOTIFY_EMAIL,
         subject: `Nová B2B registrace (čeká na potvrzení): ${agency}`,
         body: `Nová registrace:\nJméno: ${name}\nAgency: ${agency}\nIČO: ${ico}\nEmail: ${email}\nTelefon: ${phone}\nStav: ČEKÁ NA POTVRZENÍ`,
       });
+      Logger.log("Interní notifikace odeslána na: " + CONFIG.NOTIFY_EMAIL);
+    }
+
+    // Ulož do Google Sheets
+    try {
+      const ss = SpreadsheetApp.openById(CONFIG.SHEET_ID);
+      let sheet = ss.getSheetByName(CONFIG.SHEET_NAME);
+      if (!sheet) {
+        Logger.log("List '" + CONFIG.SHEET_NAME + "' nenalezen – používám první list");
+        sheet = ss.getSheets()[0];
+      }
+      Logger.log("Ukládám do listu: " + sheet.getName());
+
+      if (sheet.getLastRow() === 0) {
+        sheet.appendRow([
+          "Datum odeslání", "Stav", "Jméno", "Agency", "IČO", "E-mail", "Telefon", "Token", "Datum potvrzení"
+        ]);
+      }
+      sheet.appendRow([
+        timestamp, "ČEKÁ NA POTVRZENÍ", name, agency, ico, email, phone, token, ""
+      ]);
+      Logger.log("Uloženo do sheetu ✅");
+    } catch (sheetErr) {
+      Logger.log("Chyba při ukládání do sheetu: " + sheetErr.toString());
+      // Email byl odeslán – pokračujeme i přes chybu sheetu
     }
 
     return jsonResponse({ success: true });
 
   } catch (err) {
+    Logger.log("Kritická chyba: " + err.toString());
     return jsonResponse({ success: false, error: err.toString() });
   }
 }

@@ -189,5 +189,23 @@ function jsonResponse(data) {
 }
 
 function redirect(url) {
-  return `<meta http-equiv="refresh" content="0;url=${url}"><script>window.location.href="${url}";</script>`;
+  return `<meta http-equiv="refresh" content="0;url=${url}"><script>window.location.href="${url}";<\/script>`;
 }
+
+// ============================================================
+// TEST FUNKCE – spusťte ji ručně z Apps Script editoru
+// Ověří, že email odesílání funguje
+// ============================================================
+function testEmail() {
+  try {
+    MailApp.sendEmail({
+      to: CONFIG.NOTIFY_EMAIL,
+      subject: "TEST – Srovname.cz GAS funguje ✅",
+      body: "Pokud vidíte tento email, Google Apps Script funguje správně a může odesílat emaily.",
+    });
+    Logger.log("✅ Testovací email odeslán na: " + CONFIG.NOTIFY_EMAIL);
+  } catch (e) {
+    Logger.log("❌ Chyba: " + e.toString());
+  }
+}
+

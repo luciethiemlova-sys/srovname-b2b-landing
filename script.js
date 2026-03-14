@@ -110,12 +110,21 @@ if (registrationForm) {
 
         const formData = new FormData(form);
 
+        // Převod na URLSearchParams – GAS to zpracuje spolehlivěji
+        const params = new URLSearchParams();
+        for (const [key, value] of formData.entries()) {
+            params.append(key, value);
+        }
+
         try {
             // GAS vyžaduje no-cors kvůli CORS politice Google
             await fetch(GAS_URL, {
                 method: 'POST',
-                body: formData,
+                body: params,
                 mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
             });
 
             // S no-cors nemůžeme číst odpověď – vždy přesměrujeme

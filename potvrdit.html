@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potvrzení registrace | Srovname.cz B2B</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body class="bg-alternate">
+
+    <nav id="navbar" class="scrolled">
+        <div class="container nav-content">
+            <a href="https://www.srovname.cz/" class="logo">
+                <img src="/images/logo-srovname-new.png" alt="Srovname.cz" class="logo-img">
+            </a>
+            <a href="index.html" class="btn btn-primary">Zpět na partnery</a>
+        </div>
+    </nav>
+
+    <!-- Stav: ČEKÁ NA POTVRZENÍ (výchozí) -->
+    <div id="state-pending">
+        <header class="hero" style="padding: 10rem 0 4rem; text-align: center;">
+            <div class="container">
+                <div class="hero-content" style="max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
+                    <div class="reveal active" style="margin-bottom: 2rem;">
+                        <i class="fa-solid fa-envelope-circle-check" style="font-size: 4rem; color: var(--primary);"></i>
+                    </div>
+                    <h1 class="reveal active" style="text-align: center;">Zkontrolujte<br>svůj e-mail</h1>
+                    <p class="reveal active" style="margin: 1.5rem auto; font-size: 1.25rem; max-width: 600px; color: var(--text-main); font-weight: 500; text-align: center;">
+                        Na adresu <strong id="pending-email" style="color: var(--primary);">váš email</strong> jsme poslali potvrzovací odkaz.<br>
+                        Klikněte na odkaz v emailu pro dokončení registrace.
+                    </p>
+                    <div class="reveal active" style="margin-top: 1rem; padding: 1.5rem 2rem; background: white; border-radius: 12px; border: 2px solid var(--primary); max-width: 500px; width: 100%;">
+                        <p style="margin: 0; font-size: 0.95rem; color: var(--text-main);">
+                            <i class="fa-solid fa-circle-info" style="color: var(--primary); margin-right: 0.5rem;"></i>
+                            Email nedorazil? Zkontrolujte složku <strong>spam</strong> nebo počkejte pár minut.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <!-- Stav: POTVRZENO -->
+    <div id="state-confirmed" style="display: none;">
+        <header class="hero" style="padding: 10rem 0 4rem; text-align: center;">
+            <div class="container">
+                <div class="hero-content" style="max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
+                    <div class="reveal active" style="margin-bottom: 2rem;">
+                        <i class="fa-solid fa-circle-check" style="font-size: 4rem; color: var(--primary);"></i>
+                    </div>
+                    <h1 class="reveal active" style="text-align: center;">Registrace<br>potvrzena! ✅</h1>
+                    <p class="reveal active" style="margin: 1.5rem auto; font-size: 1.25rem; max-width: 600px; color: var(--text-main); font-weight: 500; text-align: center;">
+                        Váš e-mail <strong id="confirmed-email" style="color: var(--primary);">email</strong> byl ověřen.<br>
+                        Náš obchodník se vám ozve do 24 hodin.
+                    </p>
+                    <div class="reveal active" style="margin-top: 2.5rem; margin-bottom: 3rem;">
+                        <a href="https://admin.srovname.cz/" class="btn btn-primary btn-large">Přejít na přihlašovací stránku</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section style="padding-top: 2rem; background-color: var(--bg-alternate);">
+            <div class="container">
+                <div class="section-title reveal active">
+                    <h2>Jaké jsou další kroky?</h2>
+                </div>
+
+                <style>
+                    @media (min-width: 992px) {
+                        .benefit-list-horizontal {
+                            grid-template-columns: repeat(4, 1fr) !important;
+                        }
+                    }
+                </style>
+
+                <div class="benefit-list benefit-list-horizontal">
+                    <div class="benefit-item glass reveal active" style="flex-direction: column; text-align: center;">
+                        <div class="icon" style="margin: 0 auto 1rem;">1️⃣</div>
+                        <div>
+                            <strong style="display: block; margin-bottom: 0.5rem;">Ozve se vám náš obchodník</strong>
+                            <p style="font-size: 0.95rem;">Domluví si s vámi krátkou online schůzku, kde vám vše vysvětlí.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item glass reveal active" style="flex-direction: column; text-align: center;">
+                        <div class="icon" style="margin: 0 auto 1rem;">2️⃣</div>
+                        <div>
+                            <strong style="display: block; margin-bottom: 0.5rem;">Vlastní registrační odkaz</strong>
+                            <p style="font-size: 0.95rem;">Každý e-shop, který se přes váš unikátní odkaz zaregistruje, získá +15 % kreditu zdarma.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item glass reveal active" style="flex-direction: column; text-align: center;">
+                        <div class="icon" style="margin: 0 auto 1rem;">3️⃣</div>
+                        <div>
+                            <strong style="display: block; margin-bottom: 0.5rem;">Začnete registrovat e-shopy</strong>
+                            <p style="font-size: 0.95rem;">E-shopy můžete registrovat sami, nebo nám poslat údaje a registraci zařídíme my.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item glass reveal active" style="flex-direction: column; text-align: center;">
+                        <div class="icon" style="margin: 0 auto 1rem;">4️⃣</div>
+                        <div>
+                            <strong style="display: block; margin-bottom: 0.5rem;">Spustíme první kampaně</strong>
+                            <p style="font-size: 0.95rem;">Po nahrání feedu, nasazení pixelu a dobití kreditu spustíme inzerci.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cta-register reveal active"
+                    style="margin-top: 4rem; background: white; color: var(--text-main); border: 2px solid var(--primary); padding: 3rem 2rem;">
+                    <p style="margin-bottom: 0;">Máte problém s přihlášením? Kontaktujte nás na <a href="mailto:podpora@srovname.cz" style="color: var(--primary); font-weight: 700;">podpora@srovname.cz</a></p>
+                    <div style="margin-top: 2rem;">
+                        <a href="index.html" class="btn btn-ghost">Zpět na hlavní stránku</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Stav: CHYBA -->
+    <div id="state-error" style="display: none;">
+        <header class="hero" style="padding: 10rem 0 4rem; text-align: center;">
+            <div class="container">
+                <div class="hero-content" style="max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
+                    <div class="reveal active" style="margin-bottom: 2rem;">
+                        <i class="fa-solid fa-circle-xmark" style="font-size: 4rem; color: #e53e3e;"></i>
+                    </div>
+                    <h1 class="reveal active" style="text-align: center;">Odkaz není<br>platný</h1>
+                    <p class="reveal active" style="margin: 1.5rem auto; font-size: 1.25rem; max-width: 600px; color: var(--text-main); font-weight: 500; text-align: center;">
+                        Potvrzovací odkaz je neplatný nebo již byl použit. Pokud máte problém s potvrzením, kontaktujte nás.
+                    </p>
+                    <div class="reveal active" style="margin-top: 2.5rem; margin-bottom: 3rem; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                        <a href="index.html" class="btn btn-primary btn-large">Zaregistrovat se znovu</a>
+                        <a href="mailto:podpora@srovname.cz" class="btn btn-ghost btn-large">Kontaktovat podporu</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Srovname.cz – Všechna práva vyhrazena.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const email = urlParams.get('email');
+
+            // Skryj vše
+            document.getElementById('state-pending').style.display = 'none';
+            document.getElementById('state-confirmed').style.display = 'none';
+            document.getElementById('state-error').style.display = 'none';
+
+            if (status === 'ok') {
+                document.getElementById('state-confirmed').style.display = 'block';
+                if (email) {
+                    document.getElementById('confirmed-email').textContent = decodeURIComponent(email);
+                }
+            } else if (status === 'error') {
+                document.getElementById('state-error').style.display = 'block';
+            } else {
+                // Výchozí: čeká na potvrzení (přesměrováno z dekujeme.html)
+                document.getElementById('state-pending').style.display = 'block';
+                if (email) {
+                    document.getElementById('pending-email').textContent = decodeURIComponent(email);
+                }
+            }
+        });
+    </script>
+
+    <script src="script.js" type="module"></script>
+</body>
+
+</html>

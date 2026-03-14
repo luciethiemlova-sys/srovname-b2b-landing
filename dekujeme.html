@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Děkujeme za váš zájem | Srovname.cz B2B</title>
+    <title>Zkontrolujte e-mail | Srovname.cz B2B</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -24,14 +24,18 @@
         <div class="container">
             <div class="hero-content" style="max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
                 <div class="reveal active" style="margin-bottom: 2rem;">
-                    <i class="fa-solid fa-circle-check" style="font-size: 4rem; color: var(--primary);"></i>
+                    <i class="fa-solid fa-envelope-circle-check" style="font-size: 4rem; color: var(--primary);"></i>
                 </div>
-                <h1 class="reveal active" style="text-align: center;">Děkujeme<br>Vaše registrace byla právě dokončena.</h1>
+                <h1 class="reveal active" style="text-align: center;">Děkujeme!<br>Zkontrolujte svůj e-mail.</h1>
                 <p class="reveal active" style="margin: 1.5rem auto; font-size: 1.25rem; max-width: 600px; color: var(--text-main); font-weight: 500; text-align: center;">
-                    Na váš e-mail <strong id="user-email" style="color: var(--primary);">mail@priklad.cz</strong> zašleme do 24 hodin přihlašovací údaje do Vašeho účtu.
+                    Na adresu <strong id="user-email" style="color: var(--primary);">váš email</strong> jsme odeslali potvrzovací odkaz.<br>
+                    Klikněte na odkaz v emailu pro dokončení registrace.
                 </p>
-                <div class="reveal active" style="margin-top: 2.5rem; margin-bottom: 3rem;">
-                    <a href="https://admin.srovname.cz/" class="btn btn-primary btn-large">Přejít na přihlašovací stránku</a>
+                <div class="reveal active" style="margin-top: 1rem; margin-bottom: 3rem; padding: 1.5rem 2rem; background: white; border-radius: 12px; border: 2px solid var(--primary); max-width: 500px; width: 100%;">
+                    <p style="margin: 0; font-size: 0.95rem; color: var(--text-main);">
+                        <i class="fa-solid fa-circle-info" style="color: var(--primary); margin-right: 0.5rem;"></i>
+                        Email nedorazil? Zkontrolujte složku <strong>spam</strong> nebo počkejte pár minut.
+                    </p>
                 </div>
             </div>
         </div>
@@ -99,14 +103,14 @@
     </footer>
 
     <script>
-        // Extract email from URL parameters
+        // Extract email from URL parameters and display it
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const email = urlParams.get('email');
             if (email) {
                 const emailDisplay = document.getElementById('user-email');
                 if (emailDisplay) {
-                    emailDisplay.textContent = email;
+                    emailDisplay.textContent = decodeURIComponent(email);
                 }
             }
         });

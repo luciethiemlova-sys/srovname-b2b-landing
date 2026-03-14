@@ -87,10 +87,16 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Form Submission with AJAX and Redirect
+// Form Submission with AJAX and Redirect – Double Opt-In
+// ⚠️ Po nasazení Google Apps Scriptu nahraďte URL níže vaší GAS Web App URL
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxJY3pRgz5tmJzMEn2MCfCzP2E2uh8PWbjzFdL_dzIEciLLjCJL2nDcD62RYdhe7-I9/exec";
+
 const registrationForm = document.getElementById('registration-form');
 
 if (registrationForm) {
+    // Přepsat action formuláře na GAS URL
+    registrationForm.action = GAS_URL;
+
     registrationForm.addEventListener('submit', async function (e) {
         e.preventDefault();
 
@@ -105,25 +111,19 @@ if (registrationForm) {
         const formData = new FormData(form);
 
         try {
-            const response = await fetch(form.action, {
-                method: form.method,
+            const response = await fetch(GAS_URL, {
+                method: 'POST',
                 body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
             });
 
-            if (response.ok) {
-                // Success! Redirect to thank you page with email param
+            const data = await response.json();
+
+            if (data.success) {
+                // Úspěch! Přesměruj na stránku "Zkontrolujte e-mail"
                 const email = formData.get('email');
                 window.location.href = `/dekujeme.html?email=${encodeURIComponent(email)}`;
             } else {
-                const data = await response.json();
-                if (Object.hasOwn(data, 'errors')) {
-                    alert(data["errors"].map(error => error["message"]).join(", "));
-                } else {
-                    alert('Něco se nepovedlo. Zkuste to prosím znovu nebo nás kontaktujte e-mailem.');
-                }
+                alert('Něco se nepovedlo. Zkuste to prosím znovu nebo nás kontaktujte e-mailem.');
                 resetButton();
             }
         } catch (error) {

@@ -740,7 +740,7 @@ nav.scrolled {
 }
 
 .faq-item.faq-open .faq-icon {
-    transform: rotate(45deg);
+    transform: rotate(180deg);
 }
 
 .faq-item.active .faq-icon i {
@@ -902,7 +902,7 @@ footer {
 }
 
 .slider-arrow {
-    background-color: var(--primary-color);
+    background-color: var(--primary);
     color: white;
     border: none;
     width: 50px;

@@ -192,10 +192,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetItem = allItems[currentIndex];
             if (!targetItem) return;
 
-            slider.scrollTo({
-                left: targetItem.offsetLeft,
-                behavior: smooth ? 'smooth' : 'auto'
-            });
+            // Calculate exact left scroll to center the item
+            const scrollLeftPos = targetItem.offsetLeft - (slider.offsetWidth - targetItem.offsetWidth) / 2;
+
+            if (!smooth) {
+                // Temporarily disable scroll-snap to prevent browser snapping from fighting our instant jump
+                const originalSnap = slider.style.scrollSnapType;
+                slider.style.scrollSnapType = 'none';
+                slider.scrollTo({ left: scrollLeftPos, behavior: 'auto' });
+                // Re-enable in the next frame
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        slider.style.scrollSnapType = originalSnap || '';
+                    });
+                });
+            } else {
+                slider.scrollTo({
+                    left: scrollLeftPos,
+                    behavior: 'smooth'
+                });
+            }
         };
 
         // Scroll to initial position
@@ -215,11 +231,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     updatePosition(false);
                 } else if (currentIndex < 3) {
                     // We are at the start clones, jump to end real items
-                    currentIndex = (totalItems - 3 - originalCount) + currentIndex;
+                    currentIndex = (totalItems - 3 - originalCount) + (currentIndex % originalCount);
                     updatePosition(false);
                 }
                 isTransitioning = false;
-            }, 600); // Wait for smooth scroll to finish
+            }, 600); // 600ms is standard for smooth scrolling
         };
 
         nextBtn.addEventListener('click', () => {
@@ -237,7 +253,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Handle window resize (re-center)
-        window.addEventListener('resize', () => updatePosition(false));
+        window.addEventListener('resize', () => {
+            if (!isTransitioning) updatePosition(false);
+        });
     };
 
     // Initialize Partner Photos Slider

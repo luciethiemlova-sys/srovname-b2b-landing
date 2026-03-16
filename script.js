@@ -227,11 +227,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (currentIndex >= totalItems - 3) {
                     // We are at the end clones, jump to start real items
-                    currentIndex = 3 + (currentIndex % originalCount);
+                    currentIndex -= originalCount;
                     updatePosition(false);
                 } else if (currentIndex < 3) {
                     // We are at the start clones, jump to end real items
-                    currentIndex = (totalItems - 3 - originalCount) + (currentIndex % originalCount);
+                    currentIndex += originalCount;
                     updatePosition(false);
                 }
                 isTransitioning = false;

@@ -745,10 +745,6 @@ nav.scrolled {
     transform: rotate(180deg);
 }
 
-.faq-item.active .faq-icon i {
-    transform: rotate(180deg);
-}
-
 /* CTA Register Section */
 .cta-register {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);

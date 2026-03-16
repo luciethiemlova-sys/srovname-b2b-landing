@@ -151,11 +151,17 @@ if (registrationForm) {
         }
     });
 }
-// Partner Slider Controls
+// Partner & Testimonial Sliders
 document.addEventListener('DOMContentLoaded', () => {
-
-    // Generic infinite-loop index-based slider
-    const setupInfiniteSlider = (sliderId, prevBtnSelector, nextBtnSelector, itemSelector, visibleCount) => {
+    /**
+     * Seamless Infinite Slider
+     * @param {string} sliderId 
+     * @param {string} prevBtnSelector 
+     * @param {string} nextBtnSelector 
+     * @param {string} itemSelector 
+     * @param {number} step - how many items to scroll
+     */
+    const setupSeamlessSlider = (sliderId, prevBtnSelector, nextBtnSelector, itemSelector, step = 1) => {
         const slider = document.getElementById(sliderId);
         if (!slider) return;
 
@@ -163,76 +169,92 @@ document.addEventListener('DOMContentLoaded', () => {
         const nextBtn = document.querySelector(nextBtnSelector);
         if (!prevBtn || !nextBtn) return;
 
-        const items = slider.querySelectorAll(itemSelector);
-        if (!items.length) return;
+        let items = Array.from(slider.querySelectorAll(itemSelector));
+        if (items.length < 2) return;
 
-        let currentIndex = 0;
-        const total = items.length;
+        const originalCount = items.length;
 
-        const scrollToIndex = (index) => {
-            // Wrap around
-            if (index >= total) index = 0;
-            if (index < 0) index = total - 1;
-            currentIndex = index;
+        // Clone items for infinite effect
+        // We clone a few items to ensure the view is always filled during transition
+        const clonesBefore = items.slice(-3).map(item => item.cloneNode(true));
+        const clonesAfter = items.slice(0, 3).map(item => item.cloneNode(true));
 
-            const item = items[currentIndex];
-            // Scroll the slider so the target item is visible at the left
+        clonesBefore.reverse().forEach(clone => slider.insertBefore(clone, slider.firstChild));
+        clonesAfter.forEach(clone => slider.appendChild(clone));
+
+        // State
+        let isTransitioning = false;
+        // Start at the index 3 (because we prepended 3 clones)
+        let currentIndex = 3;
+
+        const updatePosition = (smooth = true) => {
+            const allItems = slider.querySelectorAll(itemSelector);
+            const targetItem = allItems[currentIndex];
+            if (!targetItem) return;
+
             slider.scrollTo({
-                left: item.offsetLeft,
-                behavior: 'smooth'
+                left: targetItem.offsetLeft,
+                behavior: smooth ? 'smooth' : 'auto'
             });
         };
 
-        nextBtn.addEventListener('click', () => scrollToIndex(currentIndex + (visibleCount || 1)));
-        prevBtn.addEventListener('click', () => scrollToIndex(currentIndex - (visibleCount || 1)));
-    };
+        // Scroll to initial position
+        setTimeout(() => updatePosition(false), 100);
 
-    // Setup Photo Slider (shows ~3 photos, step by 1)
-    const partnerWrapper = document.querySelector('.partner-slider-wrapper');
-    if (partnerWrapper) {
-        const prevBtn = partnerWrapper.querySelector('.slider-arrow.prev');
-        const nextBtn = partnerWrapper.querySelector('.slider-arrow.next');
-        setupInfiniteSlider('partnerSlider',
-            '#active-partners .slider-arrow.prev',
-            '#active-partners .slider-arrow.next',
-            '.partner-slide',
-            1
-        );
-        // Fallback: if querySelector above doesn't find them, bind directly
-        if (prevBtn && nextBtn) {
-            const slider = document.getElementById('partnerSlider');
-            const items = slider ? slider.querySelectorAll('.partner-slide') : [];
-            let idx = 0;
-            const goTo = (i) => {
-                if (!items.length) return;
-                if (i >= items.length) i = 0;
-                if (i < 0) i = items.length - 1;
-                idx = i;
-                slider.scrollTo({ left: items[idx].offsetLeft, behavior: 'smooth' });
-            };
-            nextBtn.onclick = () => goTo(idx + 1);
-            prevBtn.onclick = () => goTo(idx - 1);
-        }
-    }
+        const handleRotation = () => {
+            if (isTransitioning) return;
+            isTransitioning = true;
 
-    // Setup Testimonial Slider (infinite loop)
-    const testimonialWrapper = document.querySelector('.testimonial-slider-wrapper');
-    if (testimonialWrapper) {
-        const prevBtn = document.getElementById('testimonialPrev');
-        const nextBtn = document.getElementById('testimonialNext');
-        const slider = document.getElementById('testimonialSlider');
-        const items = slider ? slider.querySelectorAll('.testimonial-card') : [];
-        let idx = 0;
-
-        const goTo = (i) => {
-            if (!items.length) return;
-            if (i >= items.length) i = 0;
-            if (i < 0) i = items.length - 1;
-            idx = i;
-            slider.scrollTo({ left: items[idx].offsetLeft, behavior: 'smooth' });
+            // After smooth scroll finishes, check if we are on clones and jump back
+            setTimeout(() => {
+                const totalItems = slider.querySelectorAll(itemSelector).length;
+                
+                if (currentIndex >= totalItems - 3) {
+                    // We are at the end clones, jump to start real items
+                    currentIndex = 3 + (currentIndex % originalCount);
+                    updatePosition(false);
+                } else if (currentIndex < 3) {
+                    // We are at the start clones, jump to end real items
+                    currentIndex = (totalItems - 3 - originalCount) + currentIndex;
+                    updatePosition(false);
+                }
+                isTransitioning = false;
+            }, 600); // Wait for smooth scroll to finish
         };
 
-        if (nextBtn) nextBtn.addEventListener('click', () => goTo(idx + 1));
-        if (prevBtn) prevBtn.addEventListener('click', () => goTo(idx - 1));
-    }
+        nextBtn.addEventListener('click', () => {
+            if (isTransitioning) return;
+            currentIndex += step;
+            updatePosition(true);
+            handleRotation();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (isTransitioning) return;
+            currentIndex -= step;
+            updatePosition(true);
+            handleRotation();
+        });
+
+        // Handle window resize (re-center)
+        window.addEventListener('resize', () => updatePosition(false));
+    };
+
+    // Initialize Partner Photos Slider
+    setupSeamlessSlider(
+        'partnerSlider',
+        '#active-partners .slider-arrow.prev',
+        '#active-partners .slider-arrow.next',
+        '.partner-slide',
+        1
+    );
+
+    // Initialize Testimonials Slider
+    setupSeamlessSlider(
+        'testimonialSlider',
+        '#testimonialPrev',
+        '#testimonialNext',
+        '.testimonial-card',
+        1
+    );
 });

@@ -1,8 +1,6 @@
 ---
 description: deploy-with-review
 ---
-# Návod na deploy-with-review
-
 1. Review all changes
 2. Run npm test
 3. Create PR to main

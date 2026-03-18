@@ -293,21 +293,64 @@ nav.scrolled {
     max-width: 750px;
 }
 
-.hero-badge-container {
+.hero-collage {
     flex-shrink: 0;
     position: relative;
+    width: 380px;
+    height: 380px;
 }
 
-.hero-partner-badge {
-    height: 140px;
-    width: auto;
-    filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.15));
-    transform: rotate(4deg);
+.collage-item {
+    position: absolute;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
     transition: var(--transition);
+    border: 6px solid white;
+    background: white;
 }
 
-.hero-partner-badge:hover {
-    transform: rotate(0deg) scale(1.05);
+.collage-item:hover {
+    transform: scale(1.08) translateZ(10px) !important;
+    z-index: 10;
+    box-shadow: 0 25px 45px rgba(227, 6, 19, 0.25);
+}
+
+.collage-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.collage-1 {
+    width: 200px;
+    height: 200px;
+    top: 0;
+    left: 30px;
+    transform: rotate(-6deg);
+    z-index: 2;
+    animation: float 6s ease-in-out infinite;
+}
+
+.collage-2 {
+    width: 170px;
+    height: 170px;
+    top: 140px;
+    right: 0;
+    transform: rotate(8deg);
+    z-index: 3;
+    animation: float 7s ease-in-out infinite reverse;
+}
+
+.collage-3 {
+    width: 180px;
+    height: 180px;
+    bottom: 20px;
+    left: 0;
+    transform: rotate(-3deg);
+    z-index: 1;
+    animation: float 8s ease-in-out infinite 1s;
 }
 
 @media (max-width: 992px) {
@@ -321,13 +364,15 @@ nav.scrolled {
         max-width: 100%;
     }
 
-    .hero-badge-container {
-        margin-bottom: 1rem;
+    .hero-collage {
+        width: 300px;
+        height: 300px;
+        margin: 0 auto 2rem;
     }
-
-    .hero-partner-badge {
-        height: 100px;
-    }
+    
+    .collage-1 { width: 160px; height: 160px; left: 15px; }
+    .collage-2 { width: 140px; height: 140px; top: 120px; }
+    .collage-3 { width: 150px; height: 150px; bottom: 0; }
 }
 
 .hero h1 {
@@ -366,9 +411,7 @@ nav.scrolled {
     }
 }
 
-.hero-partner-badge.active {
-    animation: float 6s ease-in-out infinite;
-}
+
 
 /* Benefits Section */
 .section-title {
@@ -954,5 +997,104 @@ footer {
         flex: 0 0 calc(100% - 2rem);
         padding: 1.5rem;
         min-height: 180px;
+    }
+}
+
+/* Hero Marquee Logos */
+.hero-marquee-container {
+    padding: 3rem 0;
+    background: #ffffff;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+}
+
+.marquee-title {
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2rem;
+}
+
+.marquee-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.marquee-wrapper::before,
+.marquee-wrapper::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 150px;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.marquee-wrapper::before {
+    left: 0;
+    background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+}
+
+.marquee-wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+}
+
+.marquee-content {
+    display: inline-block;
+    animation: marquee-scroll 30s linear infinite;
+}
+
+.marquee-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    margin: 0 2rem;
+    opacity: 0.6;
+    transition: opacity 0.3s ease, filter 0.3s ease;
+    filter: grayscale(100%);
+    vertical-align: middle;
+}
+
+.marquee-logo:hover {
+    opacity: 1;
+    filter: grayscale(0%);
+}
+
+.marquee-logo img {
+    max-height: 40px;
+    width: auto;
+    object-fit: contain;
+}
+
+@keyframes marquee-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-33.333333%); } /* Translates exactly 1 block of 3 */
+}
+
+@media (max-width: 768px) {
+    .marquee-wrapper::before,
+    .marquee-wrapper::after {
+        width: 60px;
+    }
+    .marquee-logo {
+        height: 40px;
+        margin: 0 1.5rem;
+    }
+    .marquee-logo img {
+        max-height: 30px;
+    }
+    .hero-marquee-container {
+        padding: 2rem 0;
     }
 }

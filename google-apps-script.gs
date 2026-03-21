@@ -16,16 +16,27 @@ const CONFIG = {
 function doPost(e) {
   try {
     const params = e.parameter;
-    const agency = params.agency || "";
-    const ico = params.ico || "";
-    const email = params.email || "";
-    const phone = params.phone || "";
-    const name = params.name || "";
+    
+    // 1. Server-side Honeypot Check
+    if (params.website_url) {
+      Logger.log("BOT DETECTED: Honeypot field filled.");
+      return jsonResponse({ success: false, error: "Spam detected" });
+    }
+
+    const agency = sanitizeInput(params.agency || "");
+    const ico = sanitizeInput(params.ico || "");
+    const email = sanitizeInput(params.email || "").toLowerCase();
+    const phone = sanitizeInput(params.phone || "");
+    const name = sanitizeInput(params.name || "");
 
     Logger.log("doPost zavolán. Email: " + email + ", Agency: " + agency);
 
-    if (!email) {
-      return jsonResponse({ success: false, error: "Chybí e-mail" });
+    // 2. Server-side Basic Validation
+    if (!email || !email.includes("@")) {
+      return jsonResponse({ success: false, error: "Neplatný e-mail" });
+    }
+    if (!/^\d{8}$/.test(ico.replace(/\s/g, ""))) {
+      return jsonResponse({ success: false, error: "Neplatné IČO" });
     }
 
     const token = generateToken();
@@ -185,6 +196,13 @@ function doGet(e) {
 // ============================================================
 function generateToken() {
   return Utilities.getUuid().replace(/-/g, "");
+}
+
+function sanitizeInput(input) {
+  if (typeof input !== 'string') return "";
+  return input
+    .replace(/<[^>]*>?/gm, '') // Remove HTML tags
+    .trim();
 }
 
 function jsonResponse(data) {

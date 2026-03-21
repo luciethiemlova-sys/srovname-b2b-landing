@@ -88,13 +88,14 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // Form Submission with AJAX and Redirect – Double Opt-In
-// ⚠️ Po nasazení Google Apps Scriptu nahraďte URL níže vaší GAS Web App URL
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxJY3pRgz5tmJzMEn2MCfCzP2E2uh8PWbjzFdL_dzIEciLLjCJL2nDcD62RYdhe7-I9/exec";
 
 const registrationForm = document.getElementById('registration-form');
 
+// Track time when page loaded to prevent super-fast bot submissions
+const pageLoadTime = Date.now();
+
 if (registrationForm) {
-    // Přepsat action formuláře na GAS URL
     registrationForm.action = GAS_URL;
 
     registrationForm.addEventListener('submit', async function (e) {
@@ -103,6 +104,41 @@ if (registrationForm) {
         const form = e.target;
         const button = form.querySelector('button[type="submit"]');
         const originalButtonText = button.innerHTML;
+
+        // 1. Honeypot check
+        const honeypot = form.querySelector('input[name="website_url"]').value;
+        if (honeypot) {
+            console.warn("Spam detected (honeypot).");
+            // Silently fail or show a generic message to not tip off the bot/attacker
+            window.location.href = "/dekujeme.html"; 
+            return;
+        }
+
+        // 2. Submission speed check (bots fill forms instantly)
+        const submissionTime = Date.now();
+        if (submissionTime - pageLoadTime < 3000) { // Less than 3 seconds
+            console.warn("Spam detected (too fast).");
+            return;
+        }
+
+        // 3. Advanced Validation
+        const ico = form.querySelector('#ico').value.trim();
+        const phone = form.querySelector('#phone').value.trim();
+        const email = form.querySelector('#email').value.trim();
+
+        // IČO validation (exactly 8 digits)
+        if (!/^\d{8}$/.test(ico)) {
+            alert("Prosím zadejte platné IČO (8 číslic).");
+            form.querySelector('#ico').focus();
+            return;
+        }
+
+        // Phone validation – only 9 digits (spaces allowed)
+        if (!/^\d{9}$/.test(phone.replace(/\s/g, ''))) {
+            alert("Prosím zadejte platné telefonní číslo (9 číslic, např. 777 888 999).");
+            form.querySelector('#phone').focus();
+            return;
+        }
 
         // Change button state
         button.disabled = true;
@@ -124,6 +160,8 @@ if (registrationForm) {
             hiddenForm.style.display = 'none';
 
             for (const [key, value] of formData.entries()) {
+                // Skip the honeypot field for the final request if you want, 
+                // but better to send it and let GAS handle it too.
                 const input = document.createElement('input');
                 input.type = 'hidden';
                 input.name = key;
@@ -136,7 +174,6 @@ if (registrationForm) {
 
             // Počkáme chvíli a přesměrujeme
             setTimeout(() => {
-                const email = formData.get('email');
                 window.location.href = `/dekujeme.html?email=${encodeURIComponent(email)}`;
             }, 1500);
 

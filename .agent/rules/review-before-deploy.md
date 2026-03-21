@@ -1,3 +1,7 @@
+---
+description: Pravidla pro bezpečný deploy projektu.
+---
+
 PŘED VŠÍM deployem (npm run deploy, vercel deploy, git push main):
 1. Vytvoř staging branch
 2. Vygeneruj testy a spusť je

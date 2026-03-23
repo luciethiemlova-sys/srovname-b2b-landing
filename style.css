@@ -765,7 +765,7 @@ nav.scrolled {
 
 @media (max-width: 992px) {
     .testimonial-card {
-        flex: 0 0 calc(100% - 1rem);
+        flex: 0 0 calc(100% - 3rem);
     }
 }
 
@@ -1058,7 +1058,7 @@ footer {
     width: 100% !important;
     height: 500px !important;
     object-fit: cover;
-    object-position: center;
+    object-position: top center;
 }
 
 .slider-arrow {
@@ -1093,7 +1093,7 @@ footer {
     }
 
     .partner-slide img {
-        height: 350px !important;
+        height: 400px !important;
     }
 
     .slider-arrow {
@@ -1102,12 +1102,12 @@ footer {
     }
 
     .testimonial-slider-wrapper {
-        padding: 1rem 0.25rem;
+        padding: 1rem 0.5rem;
         gap: 0.5rem;
     }
 
     .testimonial-card {
-        flex: 0 0 calc(100% - 2rem);
+        flex: 0 0 calc(100% - 4rem);
         padding: 1.5rem;
         min-height: 180px;
     }

@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         // Scroll to initial position
-        setTimeout(() => updatePosition(false), 100);
+        setTimeout(() => updatePosition(false), 300);
 
         const handleRotation = () => {
             if (isTransitioning) return;

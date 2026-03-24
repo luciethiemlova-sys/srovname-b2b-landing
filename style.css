@@ -1045,7 +1045,7 @@ footer {
 }
 
 .partner-slide {
-    flex: 0 0 650px;
+    flex: 0 0 750px;
     display: flex !important;
     align-items: center;
     justify-content: center;
@@ -1057,7 +1057,7 @@ footer {
 
 .partner-slide img {
     width: 100% !important;
-    height: 450px !important;
+    height: 480px !important;
     object-fit: cover !important;
     object-position: top center !important;
 }
@@ -1095,7 +1095,7 @@ footer {
     }
 
     .partner-slide img {
-        height: 250px !important;
+        height: 220px !important;
         object-position: top center !important;
     }
 

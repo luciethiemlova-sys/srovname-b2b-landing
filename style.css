@@ -354,7 +354,8 @@ nav.scrolled {
 }
 
 .hero h1 {
-    font-size: clamp(2.2rem, 6vw, 2.5rem);
+    font-size: clamp(2.6rem, 8vw, 4rem);
+    line-height: 1.1;
     margin-bottom: 2rem;
     color: var(--primary);
     letter-spacing: -0.02em;
@@ -1026,7 +1027,7 @@ footer {
 
 .partner-slider {
     display: flex !important;
-    gap: 0;
+    gap: 20px !important;
     overflow-x: auto;
     scroll-behavior: smooth;
     scrollbar-width: none;
@@ -1089,7 +1090,7 @@ footer {
 
 @media (max-width: 768px) {
     .partner-slide {
-        flex: 0 0 100% !important;
+        flex: 0 0 calc(100% - 40px) !important;
         margin: 0 !important;
     }
 

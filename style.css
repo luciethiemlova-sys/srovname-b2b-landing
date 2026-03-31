@@ -1045,19 +1045,19 @@ footer {
 }
 
 .partner-slide {
-    flex: 0 0 750px;
+    flex: 0 0 420px;
     display: flex !important;
     align-items: center;
     justify-content: center;
     scroll-snap-align: center;
     border-radius: 16px;
     overflow: hidden;
-    margin: 0 10px; /* Přidání malého okraje pro lepší vizuální oddělení při rounding */
+    margin: 0 10px;
 }
 
 .partner-slide img {
     width: 100% !important;
-    height: 480px !important;
+    height: 580px !important;
     object-fit: cover !important;
     object-position: top center !important;
 }
@@ -1095,7 +1095,7 @@ footer {
     }
 
     .partner-slide img {
-        height: 220px !important;
+        height: 380px !important;
         object-position: top center !important;
     }
 
